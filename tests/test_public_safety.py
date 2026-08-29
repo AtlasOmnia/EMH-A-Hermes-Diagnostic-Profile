@@ -80,6 +80,13 @@ EMH_RELEASE_SLICE_DISTRIBUTION_PATHS = (
     ROOT / "skills/emh-memory-diagnostics/SKILL.md",
     ROOT / "CHANGELOG.md",
 )
+EMH_RELEASE_SLICE_PUBLIC_PATHS = (
+    ROOT / "skills/emh-environment-diagnostics/SKILL.md",
+    ROOT / "skills/emh-provider-diagnostics/SKILL.md",
+    ROOT / "skills/emh-tool-runtime-diagnostics/SKILL.md",
+    ROOT / "skills/emh-update-recovery/SKILL.md",
+    ROOT / "CHANGELOG.md",
+)
 
 _REDDIT_PROVENANCE_MARKERS = (
     "source_thread",
@@ -94,6 +101,20 @@ _REDDIT_URL_PATTERNS = (
     re.compile(r"https?://(?:old|www)\.reddit\.com", re.IGNORECASE),
     re.compile(r"reddit\.com/", re.IGNORECASE),
 )
+_DISCORD_PRIVATE_PROVENANCE_MARKERS = (
+    "discord",
+    "discordapp",
+    "source_message",
+    "source_server",
+    "source_channel",
+    "guild_id",
+    "server_id",
+    "channel_id",
+    "message_id",
+    "author_id",
+    "provenance:",
+)
+_PRIVATE_PLATFORM_ID_PATTERN = re.compile(r"(?<!\d)\d{17,20}(?!\d)")
 
 _REDDIT_JSON_PATH = re.compile(
     r"^/(?:search\.json|r/[A-Za-z0-9_-]+(?:/\.json|/search\.json|/comments/[A-Za-z0-9_-]+\.json|/about/rules\.json))$"
@@ -532,6 +553,12 @@ def test_emh_release_slice_changed_paths_do_not_copy_reddit_provenance_artifacts
         lowered = text.lower()
         assert not any(marker.lower() in lowered for marker in _REDDIT_PROVENANCE_MARKERS), path
         assert not any(pattern.search(text) for pattern in _REDDIT_URL_PATTERNS), path
+
+    for path in EMH_RELEASE_SLICE_PUBLIC_PATHS:
+        text = path.read_text(encoding="utf-8")
+        lowered = text.lower()
+        assert not any(marker in lowered for marker in _DISCORD_PRIVATE_PROVENANCE_MARKERS), path
+        assert not _PRIVATE_PLATFORM_ID_PATTERN.search(text), path
 
 
 def test_scan_text_detects_private_memory_markers_and_hardcoded_user_path():

@@ -126,6 +126,12 @@ Every proposed action requires explicit approval, a verified backup of configura
 - **Pitfall: a generic provider error explains a dead gateway.** Recovery: route service/adapter evidence to gateway diagnostics.
 - **Pitfall: sending a live prompt as a probe.** Recovery: preserve status/config evidence and obtain explicit approval for a bounded external test.
 
+### Lean-compression stall diagnosis
+
+Separate `tail_mode` behavior from the auxiliary summary route. Legacy-tail behavior or a separately selected low-latency summary route are configuration-specific workarounds, not universal fixes. Reasoning-off is an **EMH Recommendation** only when the selected route/version supports it; otherwise record capability as unknown or unsupported rather than prescribing it.
+
+Keep this investigation diagnostic-only and approval-gated. Do not infer or prescribe a universal model, provider, credential, or model ID, and provide no direct configuration recipe. The official PR #81274 remains open ([public record](https://github.com/NousResearch/hermes-agent/pull/81274)) and is current upstream investigation/**Hypothesis** only, not a **Known upstream fix**. After any separately approved change, perform same-workload verification against the same route/version and record the result.
+
 ## Verification checklist
 
 - [ ] Installed version, platform, profile/home, provider, endpoint class, model class, and local/cloud route are recorded.

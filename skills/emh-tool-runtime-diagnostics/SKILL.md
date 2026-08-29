@@ -129,6 +129,7 @@ Before mutation, record exact scope, verified backup, rollback, expected schema/
 ## Common pitfalls and recovery
 
 - **Pitfall: “tool not found” means not installed.** Recovery: check discovery/registration, toolset resolution, requirement gate, schema exposure, and current-session age in order.
+- **Pitfall: a healthy `hermes doctor` result proves the active session received tools.** Recovery: a healthy `hermes doctor` result does not prove the active session received tools; `tool_turns=0` means no tool call occurred. `hermes -tui` is a likely syntax trap relative to the intended `hermes --tui`; treat it only as a syntax trap, never as a remedy. Diagnostic verification is the tool inventory in a fresh session; keep enablement or other mutation approval-gated.
 - **Pitfall: catalog visibility proves model visibility.** Recovery: compare `tool_search`/`tool_describe` with the exact session's exposed schemas or reproduce in an approved fresh session.
 - **Pitfall: requirement failure is treated as registration failure.** Recovery: preserve the `check_fn`/readiness result separately and test only the missing requirement with a bounded read-only probe.
 - **Pitfall: malformed call blamed on handler.** Recovery: compare emitted name and argument keys/types with the schema before checking dispatch logs.

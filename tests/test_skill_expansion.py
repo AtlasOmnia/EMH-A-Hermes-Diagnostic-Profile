@@ -688,3 +688,89 @@ def test_v02_references_route_new_skills_and_pin_bounded_official_sources():
         "https://hermes-agent.nousresearch.com/docs/user-guide/windows-native",
     )
     assert all(url in source_index for url in urls)
+
+
+def test_tool_runtime_active_session_diagnostics_use_fresh_inventory_verification():
+    body = skill_body("emh-tool-runtime-diagnostics")
+    pitfalls = section(body, "Common pitfalls and recovery").lower()
+    commands = section(body, "Exact commands and tool calls").lower()
+
+    assert "a healthy `hermes doctor` result does not prove the active session received tools" in pitfalls
+    assert "`tool_turns=0` means no tool call occurred" in pitfalls
+    assert (
+        "`hermes -tui` is a likely syntax trap relative to the intended `hermes --tui`"
+        in pitfalls
+    )
+    assert "diagnostic verification is the tool inventory in a fresh session" in pitfalls
+    assert "never as a remedy" in pitfalls
+    assert "hermes -tui" not in commands
+
+
+def test_windows_node_npm_ebadengine_guidance_is_version_gated_and_diagnostic_only():
+    body = skill_body("emh-update-recovery")
+    pitfalls = section(body, "Common pitfalls and recovery").lower()
+    safety = section(body, "Safety and approval boundaries").lower()
+
+    assert "ebadengine" in pitfalls
+    assert "actual `node --version` and `npm --version` outputs" in pitfalls
+    assert "first failing update/installer stage" in pitfalls
+    assert "diagnose compatibility before uninstall or administrator mode" in pitfalls
+    assert "neither is a first response" in pitfalls
+    assert "managed-runtime compatibility behavior" in pitfalls
+    assert "manual version guessing" in pitfalls
+    assert "historical `npm 11.17.0` is case-specific evidence, not a universal default" in pitfalls
+    assert "merged official" in pitfalls
+    assert "current upstream evidence only" in pitfalls
+    assert "version/signature gated" in pitfalls
+    assert "not proof every installed release contains the fix" in pitfalls
+    assert "https://github.com/NousResearch/hermes-agent/pull/97072" in body
+    assert "https://github.com/NousResearch/hermes-agent/pull/97081" in body
+
+    assert "diagnostic-only" in pitfalls
+    assert "verified backup" in safety
+    assert "rollback" in safety
+    assert "evidence label" in body.lower()
+    assert "redaction" in body.lower()
+    assert "raw logs" in safety
+    assert "credentials" in safety
+
+
+def test_control_plane_persistence_mismatch_guidance_is_evidence_bound():
+    body = skill_body("emh-environment-diagnostics")
+    guidance = section(body, "Cloud control-plane and persistence mismatch", level=3).lower()
+
+    assert "portal/offline status card" in guidance
+    assert "not proof that processes, cron executions, credit/billing activity, or configured external writes stopped" in guidance
+    assert "ui/control-plane state" in guidance
+    assert "live process evidence" in guidance
+    assert "side-effect evidence" in guidance
+    assert "redacted timeline" in guidance
+    assert "verified provider/support escalation path" in guidance
+    assert "ongoing effects cannot be controlled locally" in guidance
+    assert "proxy/request/wake-path causation" in guidance
+    assert "hypothesis unless independently proven" in guidance
+    assert "explicit approval" in guidance
+    assert "evidence labels" in guidance
+    assert "redaction boundaries" in guidance
+    assert "do not prescribe autonomous process stops, cron changes, credential revocation, or external contact" in guidance
+
+
+def test_lean_compression_stall_guidance_separates_tail_and_summary_routes():
+    body = skill_body("emh-provider-diagnostics")
+    guidance = section(body, "Lean-compression stall diagnosis", level=3).lower()
+
+    assert "separate `tail_mode` behavior from the auxiliary summary route" in guidance
+    assert "legacy-tail behavior or a separately selected low-latency summary route" in guidance
+    assert "configuration-specific workarounds, not universal fixes" in guidance
+    assert "reasoning-off" in guidance
+    assert "emh recommendation" in guidance
+    assert "selected route/version supports it" in guidance
+    assert "diagnostic-only and approval-gated" in guidance
+    assert "same-workload verification" in guidance
+    assert "official pr #81274 remains open" in guidance
+    assert "current upstream investigation/**hypothesis** only" in guidance
+    assert "not a **known upstream fix**" in guidance
+    assert "universal model" in guidance
+    assert "provider, credential, or model id" in guidance
+    assert "no direct configuration recipe" in guidance
+    assert "do not introduce model ids or direct configuration recipes." in body.lower()

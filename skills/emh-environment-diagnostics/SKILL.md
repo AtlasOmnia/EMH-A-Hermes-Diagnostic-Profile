@@ -128,6 +128,12 @@ Before any mutation, record exact backend and target, explicit approval, verifie
 - **Pitfall: looking for an artifact on the host when it was created remotely.** Recovery: record the backend-returned cwd/artifact path and any sync/export step.
 - **Pitfall: “cleanup” without approval.** Recovery: leave the probe artifact in place, record it as residual state, and obtain approval for deletion.
 
+### Cloud control-plane and persistence mismatch
+
+A Portal/offline status card is only **Observed** UI/control-plane state; it is not proof that processes, cron executions, credit/billing activity, or configured external writes stopped. Keep UI/control-plane state separate from live process evidence and side-effect evidence. Preserve a redacted timeline of bounded timestamps, sources/scopes, statuses, approvals, and uncertainty.
+
+If ongoing effects cannot be controlled locally, record that boundary and use a verified provider/support escalation path subject to explicit approval; do not prescribe autonomous process stops, cron changes, credential revocation, or external contact. Any proxy/request/wake-path causation remains explicitly Hypothesis unless independently proven. Preserve evidence labels and redaction boundaries.
+
 ## Verification checklist
 
 - [ ] Host and execution-backend evidence are in separate sections.

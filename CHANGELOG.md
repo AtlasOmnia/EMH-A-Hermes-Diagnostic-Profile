@@ -12,6 +12,7 @@ These are the public weekly release notes for EMH. The newest entries are public
 
 - Corrected the public repository name and canonical source URLs to `AtlasOmnia/EMH-A-Hermes-Diagnostic-Profile`; historical release-note prose retains the former locator where it describes prior repository state.
 - Refined the community-review release slice guidance for update recovery, provider vision routing, and memory write-approval controls.
+- Promoted four redacted diagnostics — `emh-environment-diagnostics`, `emh-provider-diagnostics`, `emh-tool-runtime-diagnostics`, and `emh-update-recovery` — and advanced the distribution to `0.2.10`.
 
 ## 0.2.9 — 2026-08-14
 
