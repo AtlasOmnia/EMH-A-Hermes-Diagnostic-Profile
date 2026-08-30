@@ -25,6 +25,7 @@ REQUIRED_SKILLS = {
     "emh-orientation": "skills/emh-orientation/SKILL.md",
     "emh-rescue-media": "skills/emh-rescue-media/SKILL.md",
     "emh-reddit-json": "skills/emh-reddit-json/SKILL.md",
+    "emh-github-publishing": "skills/emh-github-publishing/SKILL.md",
 }
 EXPECTED_SKILL_VERSIONS = {
     name: "0.2.0" if name in {
@@ -42,6 +43,7 @@ EXPECTED_SKILL_VERSIONS = {
         "emh-orientation",
         "emh-rescue-media",
         "emh-reddit-json",
+        "emh-github-publishing",
     } else "0.1.0"
     for name in REQUIRED_SKILLS
 }
@@ -75,11 +77,31 @@ def test_manifest_has_required_metadata_and_owned_paths():
     manifest = yaml.safe_load((ROOT / "distribution.yaml").read_text(encoding="utf-8"))
 
     assert manifest["name"] == "emh"
-    assert manifest["version"] == "0.2.10"
+    assert manifest["version"] == "0.2.11"
     assert manifest["author"] == "Jonathan Rivera"
     assert manifest["license"] == "MIT"
     assert manifest["hermes_requires"] == ">=0.14.0"
-    assert manifest["distribution_owned"] == ["SOUL.md", "skills/", "skins/"]
+    assert manifest["distribution_owned"] == [
+        "SOUL.md",
+        "skills/emh-triage/",
+        "skills/emh-memory-diagnostics/",
+        "skills/emh-kanban-diagnostics/",
+        "skills/emh-plugin-diagnostics/",
+        "skills/emh-gateway-diagnostics/",
+        "skills/emh-provider-diagnostics/",
+        "skills/emh-profile-session-skill-diagnostics/",
+        "skills/emh-release-intelligence/",
+        "skills/emh-interface-diagnostics/",
+        "skills/emh-tool-runtime-diagnostics/",
+        "skills/emh-environment-diagnostics/",
+        "skills/emh-update-recovery/",
+        "skills/emh-nightly-self-check/",
+        "skills/emh-orientation/",
+        "skills/emh-rescue-media/",
+        "skills/emh-reddit-json/",
+        "skills/emh-github-publishing/",
+        "skins/",
+    ]
     assert manifest["skills"] == list(REQUIRED_SKILLS)
     assert "config.yaml" not in manifest
     assert not manifest.get("env_requires")
@@ -117,9 +139,29 @@ def test_installed_distribution_loader_validates_manifest_and_version_requiremen
 
     assert manifest is not None
     assert manifest.name == "emh"
-    assert manifest.version == "0.2.10"
+    assert manifest.version == "0.2.11"
     assert manifest.hermes_requires == ">=0.14.0"
-    assert manifest.distribution_owned == ["SOUL.md", "skills", "skins"]
+    assert manifest.distribution_owned == [
+        "SOUL.md",
+        "skills/emh-triage",
+        "skills/emh-memory-diagnostics",
+        "skills/emh-kanban-diagnostics",
+        "skills/emh-plugin-diagnostics",
+        "skills/emh-gateway-diagnostics",
+        "skills/emh-provider-diagnostics",
+        "skills/emh-profile-session-skill-diagnostics",
+        "skills/emh-release-intelligence",
+        "skills/emh-interface-diagnostics",
+        "skills/emh-tool-runtime-diagnostics",
+        "skills/emh-environment-diagnostics",
+        "skills/emh-update-recovery",
+        "skills/emh-nightly-self-check",
+        "skills/emh-orientation",
+        "skills/emh-rescue-media",
+        "skills/emh-reddit-json",
+        "skills/emh-github-publishing",
+        "skins",
+    ]
     check_hermes_requires(manifest.hermes_requires, "0.20.0")
 
     with pytest.raises(DistributionError):
@@ -244,25 +286,31 @@ def test_public_version_and_weekly_changelog_contract():
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     manifest = yaml.safe_load((ROOT / "distribution.yaml").read_text(encoding="utf-8"))
     changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
-    assert manifest["version"] == "0.2.10"
-    assert "distribution version: `0.2.10`" in readme.lower()
+    assert manifest["version"] == "0.2.11"
+    assert "distribution version: `0.2.11`" in readme.lower()
     assert "newest entries are public release notes" in changelog.lower()
     assert "weekly" in changelog.lower()
     assert "unreleased" in changelog.lower()
     assert "## 0.2.9" in changelog
     assert "concise" in changelog.lower()
-    expected_bullet = (
-        "- Promoted four redacted diagnostics — "
-        "`emh-environment-diagnostics`, `emh-provider-diagnostics`, "
-        "`emh-tool-runtime-diagnostics`, and `emh-update-recovery` — "
-        "and advanced the distribution to `0.2.10`."
+    added_bullet = (
+        "- Added `emh-github-publishing` (0.2.0), an instruction-only, "
+        "approval-gated workflow for redacted GitHub issue and pull-request candidates."
     )
-    assert expected_bullet in changelog.split("## 0.2.9", 1)[0]
+    changed_bullet = (
+        "- Advanced the distribution to `0.2.11` with seventeen class-level EMH skills "
+        "and granular ownership of the named `emh-*` directories."
+    )
+    unreleased = changelog.split("## 0.2.9", 1)[0]
+    assert added_bullet in unreleased
+    assert changed_bullet in unreleased
 
 
 def test_all_portable_skills_have_public_contract_frontmatter_and_sections():
     for name, relative in REQUIRED_SKILLS.items():
-        frontmatter, body = _skill_frontmatter(ROOT / relative)
+        path = ROOT / relative
+        assert path.is_file(), f"missing required skill: {relative}"
+        frontmatter, body = _skill_frontmatter(path)
         assert frontmatter["name"] == name
         assert frontmatter["version"] == EXPECTED_SKILL_VERSIONS[name]
         assert frontmatter["author"] == "Jonathan Rivera"
@@ -296,11 +344,14 @@ def test_readme_documents_exact_inventory_and_mixed_version_policy():
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     lower = readme.lower()
 
-    assert "distribution version: `0.2.10`" in lower
+    assert "distribution version: `0.2.11`" in lower
     assert all(f"`{name}`" in readme for name in REQUIRED_SKILLS)
     assert "untouched v0.1 skills remain at `0.1.0`" in lower
-    assert "fourteen v0.2 skills are `0.2.0`" in lower
-    assert "two untouched v0.1 skills remain at `0.1.0`" in lower
+    assert "fifteen v0.2 skills are `0.2.0`" in lower
+    assert "exactly seventeen class-level skills" in lower
+    assert "only the named `emh-*` skill directories" in lower
+    assert "generic github operator overlays are not public payload" in lower
+    assert "issue, push, pr, and merge remain separate approvals" in lower
 
 
 def test_triage_references_cover_required_portable_safety_contract():

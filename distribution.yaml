@@ -1,6 +1,6 @@
 name: emh
 display_name: EMH — Emergency Medical Hermes
-version: 0.2.10
+version: 0.2.11
 author: Jonathan Rivera
 license: MIT
 purpose: >-
@@ -10,7 +10,23 @@ purpose: >-
 hermes_requires: ">=0.14.0"
 distribution_owned:
   - SOUL.md
-  - skills/
+  - skills/emh-triage/
+  - skills/emh-memory-diagnostics/
+  - skills/emh-kanban-diagnostics/
+  - skills/emh-plugin-diagnostics/
+  - skills/emh-gateway-diagnostics/
+  - skills/emh-provider-diagnostics/
+  - skills/emh-profile-session-skill-diagnostics/
+  - skills/emh-release-intelligence/
+  - skills/emh-interface-diagnostics/
+  - skills/emh-tool-runtime-diagnostics/
+  - skills/emh-environment-diagnostics/
+  - skills/emh-update-recovery/
+  - skills/emh-nightly-self-check/
+  - skills/emh-orientation/
+  - skills/emh-rescue-media/
+  - skills/emh-reddit-json/
+  - skills/emh-github-publishing/
   - skins/
 skills:
   - emh-triage
@@ -29,3 +45,4 @@ skills:
   - emh-orientation
   - emh-rescue-media
   - emh-reddit-json
+  - emh-github-publishing

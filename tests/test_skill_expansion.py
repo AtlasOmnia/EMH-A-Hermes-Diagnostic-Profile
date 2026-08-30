@@ -23,6 +23,7 @@ EXPECTED_VERSIONS = {
     "emh-orientation": "0.2.0",
     "emh-rescue-media": "0.2.0",
     "emh-reddit-json": "0.2.0",
+    "emh-github-publishing": "0.2.0",
 }
 
 
@@ -76,8 +77,10 @@ def test_v02_frontmatter_matches_public_skill_contract():
         "emh-tool-runtime-diagnostics",
         "emh-environment-diagnostics",
         "emh-update-recovery",
+        "emh-github-publishing",
     ):
         path = SKILLS_ROOT / name / "SKILL.md"
+        assert path.is_file(), f"missing required skill: {path}"
         metadata, body = read_frontmatter(path)
         assert re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", metadata["name"])
         assert metadata["name"] == name
@@ -107,6 +110,7 @@ V02_SKILLS = (
     "emh-orientation",
     "emh-rescue-media",
     "emh-reddit-json",
+    "emh-github-publishing",
 )
 REQUIRED_SECTIONS = (
     "## Overview",
@@ -450,6 +454,20 @@ def test_v02_triggers_counter_triggers_and_domain_layers_are_precise():
             "fresh session",
             "isolation/context state",
         ),
+        "emh-github-publishing": (
+            "github",
+            "confirmed diagnosis",
+            "redacted",
+            "local draft",
+            "issue",
+            "pull request",
+            "worktree",
+            "push",
+            "merge",
+            "approval",
+            "remote readback",
+            "publication state",
+        ),
     }
 
     for name, terms in expected_terms.items():
@@ -565,6 +583,21 @@ def test_v02_read_only_allowlists_are_exact_and_mutations_are_separate():
             'browser_console(expression="JSON.parse(document.body.innerText)")',
             'browser_console(expression="JSON.parse(document.body.innerText).data.children.slice(0,25)")',
         ),
+        "emh-github-publishing": (
+            "git -C <target-repo> rev-parse --show-toplevel",
+            "git -C <target-repo> rev-parse HEAD",
+            "git -C <target-repo> branch --show-current",
+            "git -C <target-repo> status --porcelain=v1 -uall",
+            "git -C <target-repo> remote get-url origin",
+            "git -C <target-repo> worktree list --porcelain",
+            "git -C <target-repo> config --get user.name",
+            "git -C <target-repo> config --get user.email",
+            "gh auth status",
+            "gh repo view OWNER/REPO --json nameWithOwner,isPrivate,defaultBranchRef,viewerPermission,url",
+            "git ls-remote origin refs/heads/<base-branch>",
+            'gh issue list --repo OWNER/REPO --state all --search "<redacted-signature>" --json number,title,state,url',
+            "gh pr list --repo OWNER/REPO --state all --head <head-branch> --json number,title,state,url,headRefName,baseRefName",
+        ),
     }
 
     for name, commands in expected.items():
@@ -656,6 +689,7 @@ def test_v02_escalation_packets_add_domain_specific_classification():
         "emh-environment-diagnostics": "Cross-platform matrix",
         "emh-update-recovery": "Recovery readiness",
         "emh-reddit-json": "Reddit evidence",
+        "emh-github-publishing": "Publication state",
     }
     for name, field in expected.items():
         escalation = section(skill_body(name), "Escalation packet requirements")
@@ -774,3 +808,113 @@ def test_lean_compression_stall_guidance_separates_tail_and_summary_routes():
     assert "provider, credential, or model id" in guidance
     assert "no direct configuration recipe" in guidance
     assert "do not introduce model ids or direct configuration recipes." in body.lower()
+
+
+def test_github_publishing_requires_confirmed_case_and_rejects_proposal_promotion():
+    skill_path = SKILLS_ROOT / "emh-github-publishing/SKILL.md"
+    assert skill_path.is_file(), f"missing required skill: {skill_path}"
+    body = skill_body("emh-github-publishing")
+    contract = section(body, "Input and output contract").lower()
+    workflow = section(body, "Evidence collection workflow").lower()
+    decision = section(body, "Decision tree").lower()
+
+    assert "confirmed diagnosis" in contract
+    assert "community proposal" in contract
+    assert "input evidence only" in contract
+    assert "never confirmation" in contract
+    assert "status: proposed" in body.lower()
+    assert "hypothesis" in workflow
+    assert "do not promote" in decision
+    assert "diagnosis_not_confirmed" in decision
+    assert "case_confirmed_local_only" in decision
+
+
+def test_github_publishing_separates_local_push_pr_and_merge_approval():
+    skill_path = SKILLS_ROOT / "emh-github-publishing/SKILL.md"
+    assert skill_path.is_file(), f"missing required skill: {skill_path}"
+    body = skill_body("emh-github-publishing").lower()
+    decision = section(skill_body("emh-github-publishing"), "Decision tree").lower()
+    safety = section(skill_body("emh-github-publishing"), "Safety and approval boundaries").lower()
+
+    for approval in (
+        "local_change_approval",
+        "push_approval",
+        "issue_or_pr_approval",
+        "merge_approval",
+        "cleanup_approval",
+    ):
+        assert approval in body
+    for state in (
+        "local_change_approved",
+        "local_tests_passed",
+        "push_awaiting_approval",
+        "push_verified",
+        "issue_or_pr_awaiting_approval",
+        "issue_open_verified",
+        "pr_open_verified",
+        "merge_awaiting_approval",
+        "merged_verified",
+        "blocked",
+    ):
+        assert state in body
+    for separation in (
+        "diagnosis never implies draft",
+        "draft never implies push",
+        "push never implies pr",
+        "pr never implies ci pass",
+        "ci pass never implies merge approval",
+        "never infer issue-plus-pr",
+    ):
+        assert separation in decision
+    assert "explicit approval" in safety
+
+
+def test_github_publishing_pins_target_writer_worktree_and_body_file():
+    skill_path = SKILLS_ROOT / "emh-github-publishing/SKILL.md"
+    assert skill_path.is_file(), f"missing required skill: {skill_path}"
+    body = skill_body("emh-github-publishing")
+    contract = section(body, "Input and output contract").lower()
+    commands = body.lower()
+
+    for field in (
+        "owner/repo",
+        "canonical checkout",
+        "normalized origin",
+        "base branch",
+        "head branch",
+        "base sha",
+        "head sha",
+        "isolated worktree",
+        "authenticated writer permission",
+        "controller/writer ownership source",
+        "sole writer",
+    ):
+        assert field in contract
+    assert "requested route" in contract
+    assert "local draft only, issue, or pr" in contract
+    assert "never infer issue-plus-pr" in contract
+    assert "body-file" in body
+    assert "never rich markdown inside a double-quoted --body argument" in body.lower()
+    assert "git -c <canonical-repo> worktree add -b <head-branch> <isolated-worktree> <verified-base-sha>" in commands
+    assert "git -c <isolated-worktree> push origin head:refs/heads/<head-branch>" in commands
+    assert "gh issue create --repo owner/repo --title <approved-title> --body-file <approved-body-file>" in commands
+    assert "gh pr create --repo owner/repo --base <base-branch> --head <head-branch> --title <approved-title> --body-file <approved-body-file>" in commands
+
+
+def test_github_publishing_requires_remote_readback_and_honest_ci_state():
+    skill_path = SKILLS_ROOT / "emh-github-publishing/SKILL.md"
+    assert skill_path.is_file(), f"missing required skill: {skill_path}"
+    body = skill_body("emh-github-publishing")
+    commands = body.lower()
+    decision = section(body, "Decision tree").lower()
+    escalation = section(body, "Escalation packet requirements").lower()
+
+    assert "git ls-remote origin refs/heads/<head-branch>" in commands
+    assert "gh issue view <issue-number> --repo owner/repo --json number,url,state,title,body" in commands
+    assert "gh pr view <pr-number> --repo owner/repo --json number,url,state,title,body,baserefname,headrefname,headrefoid,mergeable" in commands
+    assert "gh pr checks <pr-number> --repo owner/repo --required --json name,state,bucket,link" in commands
+    for state in ("ci_pending", "ci_failed", "ci_passed", "no_required_checks", "ci_unknown"):
+        assert state in decision
+    assert "empty required-check set means no_required_checks, not pass" in decision
+    assert "raw command exit state" in body.lower()
+    assert "publication state" in escalation

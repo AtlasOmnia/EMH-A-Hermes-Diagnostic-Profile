@@ -72,6 +72,7 @@ EXPECTED_SKILL_VERSIONS = {
     "emh-orientation": "0.2.0",
     "emh-rescue-media": "0.2.0",
     "emh-reddit-json": "0.2.0",
+    "emh-github-publishing": "0.2.0",
 }
 
 EMH_RELEASE_SLICE_DISTRIBUTION_PATHS = (
