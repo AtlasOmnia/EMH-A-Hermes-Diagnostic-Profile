@@ -8,7 +8,7 @@ For a plain-language introduction, see [docs/user-guide.md](docs/user-guide.md).
 
 Its purpose is to diagnose, triage, safely repair, verify, and document Hermes Agent failures across profiles, memory, Kanban, plugins, gateways, providers, skills, sessions, tools, CLI/TUI/Desktop, updates, rescue media, and supported environments.
 
-Distribution version: `0.2.10`.
+Distribution version: `0.2.13`.
 
 ## Start here
 
@@ -20,7 +20,7 @@ EMH starts with safe, read-only investigation. Before changing configuration, in
 
 ## Safety and scope
 
-Investigation is read-only first. EMH does not automatically update or restart Hermes, change providers/models/credentials/live configuration, delete memories or sessions, repair databases, prune, remove plugins, run destructive Git commands, upload debug data, send telemetry, publish issues, or install cron/MCP/plugins. Approved destructive or difficult-to-reverse work requires a backup first. Never provide raw secrets; redact keys, tokens, passwords, cookies, private URLs, phone numbers, and comparable identifiers.
+Investigation is read-only first. EMH does not automatically update or restart Hermes, change providers/models/credentials/live configuration, delete memories or sessions, repair databases, prune, remove plugins, run destructive Git commands, upload debug data, send telemetry, publish issues, or install cron/MCP/plugins. Issue, push, PR, and merge remain separate approvals. Approved destructive or difficult-to-reverse work requires a backup first. Never provide raw secrets; redact keys, tokens, passwords, cookies, private URLs, phone numbers, and comparable identifiers.
 
 Evidence labels are: Observed; Reproduced; Confirmed in installed source; Officially documented; Known upstream fix; Hypothesis. Live runtime evidence and the installed source take priority over general advice. EMH compares the installed Hermes version with the current release before applying documentation written for a newer runtime.
 
@@ -87,7 +87,7 @@ After changing this repository, reinstall into a fresh disposable home or update
 HERMES_HOME="$TEST_HERMES_HOME" hermes profile update emh -y
 ```
 
-Distribution-owned content is `SOUL.md`, `skills/`, and `skins/`; the installer also rewrites `distribution.yaml` as part of its manifest bookkeeping even when it is omitted from the explicit allowlist. The bundled `emh` skin is installed as an available profile skin but is not activated automatically. User memories, sessions, credentials, logs, runtime databases, and local customizations are not payloads. Update ownership belongs to this repository for owned files and to the operator for local Hermes configuration; EMH does not claim provider or credential ownership.
+Distribution-owned content is `SOUL.md`, only the named `emh-*` skill directories under `skills/`, and `skins/`; the installer also rewrites `distribution.yaml` as part of its manifest bookkeeping even when it is omitted from the explicit allowlist. Generic GitHub operator overlays are not public payload, and operator/builtin sibling skills are preserved. The bundled `emh` skin is installed as an available profile skin but is not activated automatically. User memories, sessions, credentials, logs, runtime databases, and local customizations are not payloads. Update ownership belongs to this repository for owned files and to the operator for local Hermes configuration; EMH does not claim provider or credential ownership.
 
 ## Uninstall
 
@@ -106,7 +106,7 @@ Official documentation is authoritative: https://hermes-agent.nousresearch.com/d
 
 ### Skill inventory and version policy
 
-The distribution contains exactly sixteen class-level skills. Two untouched v0.1 skills remain at `0.1.0`; fourteen v0.2 skills are `0.2.0`. The mixed map is intentional: a skill version changes only when that skill adopts the complete v0.2 workflow and safety contract.
+The distribution contains exactly eighteen class-level skills. Two untouched v0.1 skills remain at `0.1.0`; sixteen v0.2 skills are `0.2.0`. The mixed map is intentional: a skill version changes only when that skill adopts the complete v0.2 workflow and safety contract.
 
 | Skill | Version | Scope |
 | --- | --- | --- |
@@ -122,10 +122,12 @@ The distribution contains exactly sixteen class-level skills. Two untouched v0.1
 | `emh-tool-runtime-diagnostics` | `0.2.0` | Tool discovery through result shaping |
 | `emh-environment-diagnostics` | `0.2.0` | Host/platform and execution-backend separation |
 | `emh-update-recovery` | `0.2.0` | Update readiness, failure classification, and rollback planning |
+| `emh-state-db-diagnostics` | `0.2.0` | Safe state.db, SQLite, FTS, WAL, and session persistence diagnosis with approval-gated recovery orchestration |
 | `emh-nightly-self-check` | `0.2.0` | Recurring read-only nightly health sweep (core, sessions, retention, memory, storage, cron fleet) |
 | `emh-orientation` | `0.2.0` | First-run consent flow: nightly health cron and repo update-check on the default profile |
 | `emh-rescue-media` | `0.2.0` | Build/refresh/deploy USB rescue media: redacted baseline, stdlib-only break-glass collector, encrypted patient snapshot, narrowest-repair recovery |
 | `emh-reddit-json` | `0.2.0` | Read-only public Reddit listings, searches, threads, comments, and rules as bounded JSON evidence |
+| `emh-github-publishing` | `0.2.0` | Confirmed, redacted GitHub issue or pull-request candidates with separate local, push, issue/PR, merge, and cleanup approvals |
 
 ## License
 

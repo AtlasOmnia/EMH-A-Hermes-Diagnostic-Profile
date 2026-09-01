@@ -16,7 +16,7 @@ from urllib.parse import urlsplit
 from typing import Any, Callable, Mapping, Sequence
 
 
-VERSION_COMMAND = ("hermes", "version")
+VERSION_COMMAND = ("hermes", "--version")
 RELEASE_API_URL = "https://api.github.com/repos/NousResearch/hermes-agent/releases/latest"
 USER_AGENT = "EMH/0.1.0"
 DEFAULT_TIMEOUT = 5.0

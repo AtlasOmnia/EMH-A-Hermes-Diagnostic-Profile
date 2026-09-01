@@ -38,6 +38,12 @@ Update available: 247 commits behind — run 'hermes update'
     }
 
 
+def test_source_status_uses_the_supported_version_flag():
+    module = load_module()
+
+    assert module.VERSION_COMMAND == ("hermes", "--version")
+
+
 def test_source_status_redacts_windows_home_paths_without_leaking_the_drive():
     module = load_module()
 
@@ -364,7 +370,7 @@ def test_collect_status_offline_skips_release_fetch_and_reports_git_summary():
 
     def runner(args, **kwargs):
         calls.append(args)
-        if args[1] == "version":
+        if args[1] == "--version":
             return subprocess.CompletedProcess(args, 0, stdout=version_output, stderr="")
         if args[3] == "rev-parse":
             return subprocess.CompletedProcess(args, 0, stdout="abc1234\n", stderr="")
@@ -393,7 +399,7 @@ def test_collect_status_offline_skips_release_fetch_and_reports_git_summary():
         "clean": True,
         "change_count": 0,
     }
-    assert calls[0] == ["hermes", "version"]
+    assert calls[0] == ["hermes", "--version"]
 
 
 def test_collect_status_probes_git_with_raw_path_but_returns_only_redacted_summary():
@@ -408,7 +414,7 @@ def test_collect_status_probes_git_with_raw_path_but_returns_only_redacted_summa
 
     def runner(args, **kwargs):
         calls.append(args)
-        if args == ["hermes", "version"]:
+        if args == ["hermes", "--version"]:
             return subprocess.CompletedProcess(args, 0, stdout=version_output, stderr="")
         if args == ["git", "-C", raw_path, "rev-parse", "HEAD"]:
             return subprocess.CompletedProcess(args, 0, stdout="abc1234\n", stderr="")
@@ -445,7 +451,7 @@ def test_collect_status_skips_git_probes_for_non_git_installations():
 
     assert result["status"] == "unavailable"
     assert result["git"] is None
-    assert calls == [["hermes", "version"]]
+    assert calls == [["hermes", "--version"]]
 
 
 def test_fetch_latest_release_degrades_safely_for_oversized_response():
@@ -621,7 +627,7 @@ def test_source_status_collect_status_uses_raw_path_only_for_fixed_git_probes():
 
     def runner(args, **kwargs):
         calls.append(args)
-        if args == ["hermes", "version"]:
+        if args == ["hermes", "--version"]:
             return subprocess.CompletedProcess(args, 0, stdout=version_output, stderr="")
         if args == ["git", "-C", raw_path, "rev-parse", "HEAD"]:
             return subprocess.CompletedProcess(args, 0, stdout="abc1234\n", stderr="")
