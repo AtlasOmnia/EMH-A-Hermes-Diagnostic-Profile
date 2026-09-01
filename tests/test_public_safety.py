@@ -805,7 +805,7 @@ def test_diagnostic_scripts_compile_and_expose_only_read_only_command_vectors():
 
     collect.collect_vitals(subsystems=list(collect.COMMANDS), runner=runner)
     assert set(seen) == PUBLIC_COMMANDS
-    assert release.VERSION_COMMAND == ("hermes", "version")
+    assert release.VERSION_COMMAND == ("hermes", "--version")
     assert not set(release.VERSION_COMMAND).intersection(MUTATION_WORDS)
 
     compile_targets = (TRIAGE_SCRIPT, RELEASE_SCRIPT)

@@ -79,7 +79,7 @@ def test_manifest_has_required_metadata_and_owned_paths():
     manifest = yaml.safe_load((ROOT / "distribution.yaml").read_text(encoding="utf-8"))
 
     assert manifest["name"] == "emh"
-    assert manifest["version"] == "0.2.12"
+    assert manifest["version"] == "0.2.13"
     assert manifest["author"] == "Jonathan Rivera"
     assert manifest["license"] == "MIT"
     assert manifest["hermes_requires"] == ">=0.14.0"
@@ -118,18 +118,18 @@ def test_source_manifest_records_version_install_and_release_provenance():
     )
 
     assert source["retrieved_at"].endswith("Z")
-    assert source["installed"]["version"] == "0.20.0"
+    assert source["installed"]["version"] == "0.21.0"
     assert source["installed"]["install_method"] == "git"
     assert source["installed"]["source_commit"] == (
-        "01a1037d1e6d7b6eb96a786ef282c3aea4818194"
+        "b20cc5f787ea816ea8645603b7b2ac8234dcb8b4"
     )
     assert source["installed"]["dirty"] is True
     assert "filenames" not in source["installed"]
     assert source["latest_official_release"] == {
-        "tag": "v2026.8.3",
-        "version": "0.20.0",
-        "url": "https://github.com/NousResearch/hermes-agent/releases/tag/v2026.8.3",
-        "published_at": "2026-08-03T16:57:52Z",
+        "tag": "v2026.8.31",
+        "version": "0.21.0",
+        "url": "https://github.com/NousResearch/hermes-agent/releases/tag/v2026.8.31",
+        "published_at": "2026-08-31T19:29:49Z",
     }
     assert "https://hermes-agent.nousresearch.com/docs" in source["official_sources"]
     assert "https://github.com/NousResearch/hermes-agent/releases/latest" in source[
@@ -142,7 +142,7 @@ def test_installed_distribution_loader_validates_manifest_and_version_requiremen
 
     assert manifest is not None
     assert manifest.name == "emh"
-    assert manifest.version == "0.2.12"
+    assert manifest.version == "0.2.13"
     assert manifest.hermes_requires == ">=0.14.0"
     assert manifest.distribution_owned == [
         "SOUL.md",
@@ -290,8 +290,8 @@ def test_public_version_and_weekly_changelog_contract():
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     manifest = yaml.safe_load((ROOT / "distribution.yaml").read_text(encoding="utf-8"))
     changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
-    assert manifest["version"] == "0.2.12"
-    assert "distribution version: `0.2.12`" in readme.lower()
+    assert manifest["version"] == "0.2.13"
+    assert "distribution version: `0.2.13`" in readme.lower()
     assert "newest entries are public release notes" in changelog.lower()
     assert "weekly" in changelog.lower()
     assert "unreleased" in changelog.lower()
@@ -302,7 +302,7 @@ def test_public_version_and_weekly_changelog_contract():
         "approval-gated workflow for redacted GitHub issue and pull-request candidates."
     )
     changed_bullet = (
-        "- Advanced the distribution to `0.2.12` with eighteen class-level EMH skills "
+        "- Advanced the distribution to `0.2.13` with eighteen class-level EMH skills "
         "and granular ownership of the named `emh-*` directories."
     )
     unreleased = changelog.split("## 0.2.9", 1)[0]
@@ -348,7 +348,7 @@ def test_readme_documents_exact_inventory_and_mixed_version_policy():
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     lower = readme.lower()
 
-    assert "distribution version: `0.2.12`" in lower
+    assert "distribution version: `0.2.13`" in lower
     assert all(f"`{name}`" in readme for name in REQUIRED_SKILLS)
     assert "untouched v0.1 skills remain at `0.1.0`" in lower
     assert "sixteen v0.2 skills are `0.2.0`" in lower
