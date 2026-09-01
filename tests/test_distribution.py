@@ -21,6 +21,7 @@ REQUIRED_SKILLS = {
     "emh-tool-runtime-diagnostics": "skills/emh-tool-runtime-diagnostics/SKILL.md",
     "emh-environment-diagnostics": "skills/emh-environment-diagnostics/SKILL.md",
     "emh-update-recovery": "skills/emh-update-recovery/SKILL.md",
+    "emh-state-db-diagnostics": "skills/emh-state-db-diagnostics/SKILL.md",
     "emh-nightly-self-check": "skills/emh-nightly-self-check/SKILL.md",
     "emh-orientation": "skills/emh-orientation/SKILL.md",
     "emh-rescue-media": "skills/emh-rescue-media/SKILL.md",
@@ -39,6 +40,7 @@ EXPECTED_SKILL_VERSIONS = {
         "emh-tool-runtime-diagnostics",
         "emh-environment-diagnostics",
         "emh-update-recovery",
+        "emh-state-db-diagnostics",
         "emh-nightly-self-check",
         "emh-orientation",
         "emh-rescue-media",
@@ -77,7 +79,7 @@ def test_manifest_has_required_metadata_and_owned_paths():
     manifest = yaml.safe_load((ROOT / "distribution.yaml").read_text(encoding="utf-8"))
 
     assert manifest["name"] == "emh"
-    assert manifest["version"] == "0.2.11"
+    assert manifest["version"] == "0.2.12"
     assert manifest["author"] == "Jonathan Rivera"
     assert manifest["license"] == "MIT"
     assert manifest["hermes_requires"] == ">=0.14.0"
@@ -95,6 +97,7 @@ def test_manifest_has_required_metadata_and_owned_paths():
         "skills/emh-tool-runtime-diagnostics/",
         "skills/emh-environment-diagnostics/",
         "skills/emh-update-recovery/",
+        "skills/emh-state-db-diagnostics/",
         "skills/emh-nightly-self-check/",
         "skills/emh-orientation/",
         "skills/emh-rescue-media/",
@@ -139,7 +142,7 @@ def test_installed_distribution_loader_validates_manifest_and_version_requiremen
 
     assert manifest is not None
     assert manifest.name == "emh"
-    assert manifest.version == "0.2.11"
+    assert manifest.version == "0.2.12"
     assert manifest.hermes_requires == ">=0.14.0"
     assert manifest.distribution_owned == [
         "SOUL.md",
@@ -155,6 +158,7 @@ def test_installed_distribution_loader_validates_manifest_and_version_requiremen
         "skills/emh-tool-runtime-diagnostics",
         "skills/emh-environment-diagnostics",
         "skills/emh-update-recovery",
+        "skills/emh-state-db-diagnostics",
         "skills/emh-nightly-self-check",
         "skills/emh-orientation",
         "skills/emh-rescue-media",
@@ -286,8 +290,8 @@ def test_public_version_and_weekly_changelog_contract():
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     manifest = yaml.safe_load((ROOT / "distribution.yaml").read_text(encoding="utf-8"))
     changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
-    assert manifest["version"] == "0.2.11"
-    assert "distribution version: `0.2.11`" in readme.lower()
+    assert manifest["version"] == "0.2.12"
+    assert "distribution version: `0.2.12`" in readme.lower()
     assert "newest entries are public release notes" in changelog.lower()
     assert "weekly" in changelog.lower()
     assert "unreleased" in changelog.lower()
@@ -298,7 +302,7 @@ def test_public_version_and_weekly_changelog_contract():
         "approval-gated workflow for redacted GitHub issue and pull-request candidates."
     )
     changed_bullet = (
-        "- Advanced the distribution to `0.2.11` with seventeen class-level EMH skills "
+        "- Advanced the distribution to `0.2.12` with eighteen class-level EMH skills "
         "and granular ownership of the named `emh-*` directories."
     )
     unreleased = changelog.split("## 0.2.9", 1)[0]
@@ -344,11 +348,11 @@ def test_readme_documents_exact_inventory_and_mixed_version_policy():
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     lower = readme.lower()
 
-    assert "distribution version: `0.2.11`" in lower
+    assert "distribution version: `0.2.12`" in lower
     assert all(f"`{name}`" in readme for name in REQUIRED_SKILLS)
     assert "untouched v0.1 skills remain at `0.1.0`" in lower
-    assert "fifteen v0.2 skills are `0.2.0`" in lower
-    assert "exactly seventeen class-level skills" in lower
+    assert "sixteen v0.2 skills are `0.2.0`" in lower
+    assert "exactly eighteen class-level skills" in lower
     assert "only the named `emh-*` skill directories" in lower
     assert "generic github operator overlays are not public payload" in lower
     assert "issue, push, pr, and merge remain separate approvals" in lower

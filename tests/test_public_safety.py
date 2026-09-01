@@ -68,6 +68,7 @@ EXPECTED_SKILL_VERSIONS = {
     "emh-tool-runtime-diagnostics": "0.2.0",
     "emh-environment-diagnostics": "0.2.0",
     "emh-update-recovery": "0.2.0",
+    "emh-state-db-diagnostics": "0.2.0",
     "emh-nightly-self-check": "0.2.0",
     "emh-orientation": "0.2.0",
     "emh-rescue-media": "0.2.0",
