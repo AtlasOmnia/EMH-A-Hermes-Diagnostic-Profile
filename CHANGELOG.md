@@ -8,6 +8,8 @@ These are the public weekly release notes for EMH. The newest entries are public
 
 - Keep unreleased changes here until the weekly release-note cut; retain the full historical record below.
 
+## 0.2.14 — 2026-10-26
+
 ### Added
 
 - Added `emh-github-publishing` (0.2.0), an instruction-only, approval-gated workflow for redacted GitHub issue and pull-request candidates.
@@ -21,6 +23,8 @@ These are the public weekly release notes for EMH. The newest entries are public
 - Promoted four redacted diagnostics — `emh-environment-diagnostics`, `emh-provider-diagnostics`, `emh-tool-runtime-diagnostics`, and `emh-update-recovery` — and advanced the distribution to `0.2.10`.
 - Advanced the distribution to `0.2.13` with eighteen class-level EMH skills and granular ownership of the named `emh-*` directories.
 - Unified the EMH skin banner lettering to the single `#2BDDF4` accent color (previously a six-step gradient).
+- Refreshed release intelligence to the verified Hermes Agent v0.22.5 latest-release baseline (installed reference 0.22.2+19).
+- Promoted two redacted provider diagnostics into `emh-provider-diagnostics`: post-update authorization failure triage and bursty-workload provider failure triage; advanced the distribution to `0.2.14`.
 
 ## 0.2.9 — 2026-08-14
 

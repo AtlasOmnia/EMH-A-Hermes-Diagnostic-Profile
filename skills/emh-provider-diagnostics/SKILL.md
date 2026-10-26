@@ -132,6 +132,14 @@ Separate `tail_mode` behavior from the auxiliary summary route. Legacy-tail beha
 
 Keep this investigation diagnostic-only and approval-gated. Do not infer or prescribe a universal model, provider, credential, or model ID, and provide no direct configuration recipe. The official PR #81274 remains open ([public record](https://github.com/NousResearch/hermes-agent/pull/81274)) and is current upstream investigation/**Hypothesis** only, not a **Known upstream fix**. After any separately approved change, perform same-workload verification against the same route/version and record the result.
 
+### Authorization failure after an update
+
+A healthy `hermes doctor` result does not prove provider authorization is valid. Keep update timing, local OAuth/credential state, and provider-side conditions as separate candidate causes; an update that precedes the error is correlation, not causation. Read the per-provider state with `hermes auth status <provider>` alongside `hermes auth list`, without printing tokens. Re-authenticating through `hermes model`, `hermes auth logout <provider>` (which clears stored auth state), and reinstall are approval-gated mutations in that escalating order: logout is a credential-clearing fallback, never a first step, and reinstall is a last resort only after the provider-authorization path has been checked. After any approved change, verify with one separately approved minimal inference request.
+
+### Bursty-workload provider failures
+
+Repeated HTTP 500 responses or timeouts during a high-volume burst are evidence for those attempts, not proof that a provider is down or that fallback is broken. Start from read-only evidence: `hermes logs agent --since <window> --level WARNING` and `hermes logs errors` for the burst window, and `hermes fallback list` for the configured chain. Installed help states the fallback chain is tried when the primary model fails with rate-limit, overload, or connection errors; whether a given 500 or timeout triggered it must be confirmed from the logs, so record per attempt the provider, elapsed time, exact status/error, and fallback outcome. Any reproduction contacts providers and is approval-gated: begin with a small serial batch and raise concurrency gradually while recording the same fields. Adding, removing, or clearing fallback entries is a mutation. Any claim that a specific concurrency setting reduces failures remains **Hypothesis** until reproduced on the affected installation with an unchanged request mix.
+
 ## Verification checklist
 
 - [ ] Installed version, platform, profile/home, provider, endpoint class, model class, and local/cloud route are recorded.
