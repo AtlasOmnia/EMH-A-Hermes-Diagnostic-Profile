@@ -942,3 +942,35 @@ def test_github_publishing_requires_remote_readback_and_honest_ci_state():
     assert "empty required-check set means no_required_checks, not pass" in decision
     assert "raw command exit state" in body.lower()
     assert "publication state" in escalation
+
+
+def test_post_update_authorization_guidance_orders_reads_before_credential_mutation():
+    body = skill_body("emh-provider-diagnostics")
+    guidance = section(body, "Authorization failure after an update", level=3).lower()
+
+    assert "a healthy `hermes doctor` result does not prove provider authorization is valid" in guidance
+    assert "correlation, not causation" in guidance
+    assert "`hermes auth status <provider>`" in guidance
+    assert "without printing tokens" in guidance
+    assert "approval-gated mutations in that escalating order" in guidance
+    assert "credential-clearing fallback, never a first step" in guidance
+    assert "reinstall is a last resort" in guidance
+    assert "separately approved minimal inference request" in guidance
+
+
+def test_bursty_workload_guidance_is_evidence_first_and_keeps_concurrency_claims_hypothesis():
+    body = skill_body("emh-provider-diagnostics")
+    guidance = section(body, "Bursty-workload provider failures", level=3).lower()
+
+    assert "evidence for those attempts, not proof that a provider is down" in guidance
+    assert "`hermes logs agent --since <window> --level warning`" in guidance
+    assert "`hermes logs errors`" in guidance
+    assert "`hermes fallback list`" in guidance
+    assert "rate-limit, overload, or connection errors" in guidance
+    assert "must be confirmed from the logs" in guidance
+    assert "provider, elapsed time, exact status/error, and fallback outcome" in guidance
+    assert "approval-gated" in guidance
+    assert "small serial batch" in guidance
+    assert "adding, removing, or clearing fallback entries is a mutation" in guidance
+    assert "remains **hypothesis**" in guidance
+    assert "max_concurrent_children" not in guidance
