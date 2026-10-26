@@ -20,6 +20,7 @@ These are the public weekly release notes for EMH. The newest entries are public
 - Refined the community-review release slice guidance for update recovery, provider vision routing, and memory write-approval controls.
 - Promoted four redacted diagnostics — `emh-environment-diagnostics`, `emh-provider-diagnostics`, `emh-tool-runtime-diagnostics`, and `emh-update-recovery` — and advanced the distribution to `0.2.10`.
 - Advanced the distribution to `0.2.13` with eighteen class-level EMH skills and granular ownership of the named `emh-*` directories.
+- Unified the EMH skin banner lettering to the single `#2BDDF4` accent color (previously a six-step gradient).
 
 ## 0.2.9 — 2026-08-14
 

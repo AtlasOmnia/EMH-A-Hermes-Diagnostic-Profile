@@ -97,12 +97,12 @@ tool_prefix: "│"
 
 # Original fan-inspired terminal lettering; no protected logo or character art.
 banner_logo: |-
-  [bold #9AF7FF]███████╗███╗   ███╗██╗  ██╗[/]
-  [bold #75EEF9]██╔════╝████╗ ████║██║  ██║[/]
+  [bold #2BDDF4]███████╗███╗   ███╗██╗  ██╗[/]
+  [bold #2BDDF4]██╔════╝████╗ ████║██║  ██║[/]
   [bold #2BDDF4]█████╗  ██╔████╔██║███████║[/]
-  [#21BFD6]██╔══╝  ██║╚██╔╝██║██╔══██║[/]
-  [#167E91]███████╗██║ ╚═╝ ██║██║  ██║[/]
-  [#0F5968]╚══════╝╚═╝     ╚═╝╚═╝  ╚═╝[/]
+  [bold #2BDDF4]██╔══╝  ██║╚██╔╝██║██╔══██║[/]
+  [bold #2BDDF4]███████╗██║ ╚═╝ ██║██║  ██║[/]
+  [bold #2BDDF4]╚══════╝╚═╝     ╚═╝╚═╝  ╚═╝[/]
   [dim #6F929A]EMERGENCY MEDICAL HERMES // SOFTWARE DIAGNOSTICS[/]
 
 # Generic medical telemetry motif; not derived from a protected emblem.
