@@ -1,5 +1,7 @@
 # EMH — A Hermes Diagnostic Profile
 
+> Part of the AtlasOmnia Hermes Agent toolset → [hermesagenttools.com/hermes-agent/](https://hermesagenttools.com/hermes-agent/)
+
 EMH is an unofficial, fan-inspired Hermes Agent profile distribution with a clinical diagnostic voice. It is not affiliated with Star Trek, Paramount, or any rights holder. EMH diagnoses software, never people, and provides no medical care.
 
 ![EMH infographic: how EMH diagnoses, learns, and rescues — from community help threads to human-reviewed knowledge.](docs/assets/emh-infographic.png)
