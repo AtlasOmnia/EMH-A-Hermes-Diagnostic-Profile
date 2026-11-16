@@ -40,7 +40,7 @@ Record findings in the standard case structure — Complaint (the anomaly as obs
 
 1. **Core health.** Run `PAGER=cat hermes status` and `PAGER=cat hermes doctor`. Distinguish genuine failures from optional unset integrations/API keys; label each claim exactly as **Observed**, **Reproduced**, **Confirmed in installed source**, **Officially documented**, **Known upstream fix**, or **Hypothesis**.
 2. **Session lifecycle.** Query the session store read-only (`$HERMES_HOME/state.db`); `sessions.ended_at IS NULL` means open. Group open sessions by source and age. Flag detached sessions only when stale: cli/api_server/tui/speech-bridge older than 24h; cron/subagent older than 6h. Do not flag long-lived telegram/discord/bluebubbles sessions merely for being open. If detached counts spike, group exact first user messages to identify a runaway producer instead of guessing.
-3. **Retention health.** Confirm the configured retention prune script exists and passes a syntax check (`bash -n`). Inspect the latest completed block in the retention log. Flag a missing completion, nonzero failure, or no successful run within 30 hours. Do not run the cleanup.
+3. **Retention health.** Only evaluate retention when this Hermes home explicitly configures both a prune-script path and its corresponding log path. If either path is not configured, report `not configured` (informational, not an anomaly) and skip this check; default Hermes `SessionDB` retention does not require a separate prune script or `session-retention-prune.log`. When both paths are configured, confirm the script exists and passes a syntax check (`bash -n`), then inspect the latest completed block in the configured retention log. Flag a missing completion, nonzero failure, or no successful run within 30 hours only for a configured retention job. Do not run the cleanup.
 4. **Memory health.** Measure the built-in memory files (`$HERMES_HOME/memories/MEMORY.md`, `USER.md`) by bytes, non-whitespace characters, and `§` entry count. Run `hermes memory status`; flag a configured provider that is not installed or unavailable. If the Mnemosyne executable exists, run its read-only `stats` command only — never `sleep`, `dream`, or consolidation. Treat built-in and Mnemosyne as separate layers; report exactly which layer is unhealthy.
 5. **Storage signal.** Report the state database and WAL sizes plus filesystem free space. Flag WAL above 1 GB, free space below 10 GB, or state-db growth above 25% versus the prior nightly report when a prior value is available. Do not vacuum or delete backups.
 6. **Cron fleet health.** Do not infer job health from the aggregate count in `hermes status` or from `hermes doctor` alone. Read the job store and execution database directly and run `PAGER=cat hermes cron status`. For every enabled job, flag `last_status` values of `error` or `blocked_config`, and flag any nonempty `last_error`. Include job name, job ID, last run time, exact error class/root cause, and the recommended next step. Inspect each enabled job's latest execution attempt; flag a latest terminal state of `failed` or `unknown`, and repeated failures when the last two or more attempts failed. Flag enabled jobs whose `next_run_at` is more than 10 minutes overdue when no corresponding execution is currently `claimed` or `running`. Ignore historical errors on paused or disabled jobs. If a failed enabled job uses `deliver: local`, note that it has no proactive user notification route in the current setup.
@@ -70,7 +70,8 @@ Run only the smallest relevant subset; output remains private until redacted.
 - `read_file(path="$HERMES_HOME/memories/USER.md", offset=1, limit=200)`
 - `read_file(path="$HERMES_HOME/cron/jobs.json", offset=1, limit=2000)`
 - `read_file(path="$HERMES_HOME/cron/executions.db", ...)` (read-only queries only)
-- `read_file(path="$HERMES_HOME/logs/session-retention-prune.log", offset=1, limit=200)`
+- `bash -n "<configured retention prune script>"` (syntax check only; use only when both the prune-script path and matching log path are explicitly configured; never execute the cleanup)
+- `read_file(path="<configured retention log path>", offset=1, limit=200)` (only when both paths are explicitly configured; otherwise report `not configured` and skip.)
 
 ### Approval-gated reproductions and mutations
 
@@ -102,7 +103,7 @@ Before any mutating treatment, require the user's explicit approval, the exact t
 - [ ] Every check stayed read-only; no process, database, or configuration was touched.
 - [ ] Claims carry evidence labels; Hypothesis never presented as fact.
 - [ ] Detached-session flags respect the per-source age thresholds.
-- [ ] Retention health judged from the latest completed log block, not absence of errors alone.
+- [ ] Retention health reports `not configured` without flagging an anomaly when either the prune script or its log path is not explicitly configured; when both are configured, judge health from the latest completed log block and preserve the 30-hour freshness rule.
 - [ ] Cron flags include job name, job ID, last run time, exact error class, and recommended next step.
 - [ ] Output contract honored: `All clear.` or `ATTENTION NEEDED` with at most 10 actionable bullets.
 - [ ] No raw secrets, tokens, private URLs, or full logs in the report; bounded redacted findings only.

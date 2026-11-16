@@ -81,6 +81,15 @@ HERMES_HOME="$TEST_HERMES_HOME" hermes --profile emh chat -s emh-triage -q "Plea
 
 Start a session with `setup` to run the `emh-orientation` skill: it explains the optional nightly health cron and repo update-check, asks for your consent per integration, and registers chosen crons on your default profile.
 
+## Optional scheduled checks: cost and data access
+
+The `setup` flow may offer two optional jobs on the default profile. Each requires separate consent. Every run is a billed model call on the default profile's configured provider; the job prompt and its read-only results are supplied to that provider. If both jobs are enabled, expect about 30 nightly runs plus 4-5 weekly runs, approximately 34-35 billed calls per month. The monetary cost depends on the configured provider/model and usage.
+
+- **Nightly health check** — daily at 03:00 (`0 3 * * *`). It reads `$HERMES_HOME/memories/MEMORY.md`, `$HERMES_HOME/memories/USER.md`, `$HERMES_HOME/state.db`, `$HERMES_HOME/cron/jobs.json`, and `$HERMES_HOME/cron/executions.db`; it also inspects bounded output from `hermes status`, `hermes doctor`, `hermes memory status`, and `hermes cron status`, and checks storage sizes/free space. Mnemosyne stats are read only when its executable exists; retention script/log data are read only when both paths are explicitly configured. Default Hermes `SessionDB` retention needs no separate prune script or log.
+- **Repo update-check** — Mondays at 04:00 (`0 4 * * 1`). It reads the installed distribution version, the recorded source's latest commit, and the `CHANGELOG` delta, then reports availability without applying updates.
+
+Neither job is registered unless you consent to that specific job. The provider's actual per-call price is not estimated here.
+
 ## Development update
 
 After changing this repository, reinstall into a fresh disposable home or update a disposable installation from its recorded source:

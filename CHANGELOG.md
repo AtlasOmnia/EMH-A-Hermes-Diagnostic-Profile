@@ -4,6 +4,10 @@ These are the public weekly release notes for EMH. The newest entries are public
 
 ## Unreleased
 
+### Candidate — issue #5
+
+- Addressed issue #5: fetch upstream content only from pinned, version-checked release tags or a full commit SHA; treat unconfigured retention pruning as informational; disclose the optional default-profile cron schedules, billed calls, and read surfaces before consent; use `hermes gateway status` for channel detection.
+
 ### Convention
 
 - Keep unreleased changes here until the weekly release-note cut; retain the full historical record below.

@@ -46,19 +46,22 @@ Follow the standard case structure — Complaint (the operator's goal, usually "
 1. **Inventory the operator's setup state (read-only, before any offer).**
    - Confirm the EMH profile is installed and identify its recorded source: `hermes profile info emh`.
    - List existing crons on the default profile: `hermes cron list` (no `--profile` flag — the default home is the target).
-   - Detect available delivery channels on the default profile: `hermes gateway status` and the default `config.yaml` platform section. A channel present and enabled (for example Telegram) means a notified cron can deliver; absent channels mean `deliver: local` with an explicit warning.
+   - Detect available delivery channels on the default profile with `hermes gateway status`. A channel present and enabled (for example Telegram) means a notified cron can deliver; absent channels mean `deliver: local` with an explicit warning.
    - Check whether the recorded source has a remote: `git -C <recorded-source> remote -v`. No remote means the update-check cron cannot fetch and must not be registered.
-2. **Explain the nightly health cron.** Summarize what it checks (core health, session lifecycle, retention, memory, storage, cron fleet), when it runs (daily 03:00), what it reports (`All clear.` or `ATTENTION NEEDED`, max 10 bullets), and that it is read-only — it never repairs. State the delivery plan based on the detected channels.
-3. **Ask for consent to register the nightly health cron on the default profile.** Only the explicit, specific consent covers registration; do not proceed on a general "sure, set things up."
-4. **Explain how updating works.** Lay out the update model plainly before offering the check:
+2. **Disclose schedule, model cost, and read surfaces before either cron consent question.** Say both jobs are optional and run only with separate consent. The nightly health check runs daily at 03:00 (`0 3 * * *`); the repo update-check runs Mondays at 04:00 (`0 4 * * 1`). Every execution is a billed model call on the default profile's configured provider. If both are enabled, expect about 30 nightly plus 4-5 weekly, approximately 34-35 calls per month; dollar cost depends on the configured provider/model and usage. The job prompt and its read-only results are supplied to that provider for each run.
+   - **Nightly reads:** `$HERMES_HOME/memories/MEMORY.md`, `$HERMES_HOME/memories/USER.md`, `$HERMES_HOME/state.db`, `$HERMES_HOME/cron/jobs.json`, and `$HERMES_HOME/cron/executions.db`. It also inspects bounded output from `hermes status`, `hermes doctor`, `hermes memory status`, and `hermes cron status`, plus storage sizes and free space. It reads Mnemosyne stats only when the executable exists, and retention script/log data only when both paths are explicitly configured.
+   - **Weekly update-check reads:** the installed distribution version, the recorded source's latest commit, and the `CHANGELOG` delta. It reports availability only and never applies an update.
+3. **Explain the nightly health cron.** Summarize what it checks (core health, session lifecycle, retention, memory, storage, cron fleet), when it runs (daily at 03:00), what it reports (`All clear.` or `ATTENTION NEEDED`, max 10 bullets), and that it is read-only — it never repairs. State the delivery plan based on the detected channels.
+4. **Ask for consent to register the nightly health cron on the default profile.** Only the explicit, specific consent covers registration; do not proceed on a general "sure, set things up."
+5. **Explain how updating works.** Lay out the update model plainly before offering the check:
    - **What updates:** the distribution-owned files — `SOUL.md`, `skills/`, `skins/` — from the recorded source. Operator-owned state — memories, sessions, credentials, provider keys, logs, configuration — is never touched by an update.
    - **How EMH knows an update exists:** a weekly check compares the installed distribution version against the recorded source's latest commit, reads the CHANGELOG delta, and reports (read-only) whether an update is available and what changed. It never applies anything.
    - **How an update gets applied:** the operator runs `hermes profile update emh` from the recorded source — optionally after `hermes backup` — then verifies with `hermes profile info emh`. EMH never updates itself; applying is always an explicit operator action.
    - **Availability:** the check only works when the recorded source has a remote (for example a GitHub clone). If the source has no remote, say so and skip the offer.
-5. **Ask for consent to register the update-check cron.** Record the answer even when declined.
-6. **Explain rescue media.** Summarize what it is (a portable USB kit: redacted baseline, break-glass collector that runs even when Hermes cannot, encrypted patient snapshot), what it is not (a bootable OS rescue disk), and its key rule (the snapshot key is held off-media, never on the USB). Ask whether to build it now or defer; a "yes" hands off to `emh-rescue-media` — orientation never duplicates the build.
-7. **Register the chosen crons (approval-gated mutations), each followed by verification.** Register from the default-profile context (see Exact commands) so the jobs land in the default store with access to its channels.
-8. **Re-check the default cron inventory** and confirm each registered job's name, schedule, deliver target, toolsets, and prompt fingerprint. Report what was installed, what was declined (including rescue media consent), and the residual caveats (for example a `local`-only deliver when no channel was detected).
+6. **Ask for consent to register the update-check cron.** Immediately before asking, repeat its Monday 04:00 schedule, the billed-model-call disclosure, its share of the approximate 34-35 monthly runs, and the inputs it reads (installed distribution version, recorded-source latest commit, and CHANGELOG delta). Record the answer even when declined.
+7. **Explain rescue media.** Summarize what it is (a portable USB kit: redacted baseline, break-glass collector that runs even when Hermes cannot, encrypted patient snapshot), what it is not (a bootable OS rescue disk), and its key rule (the snapshot key is held off-media, never on the USB). Ask whether to build it now or defer; a "yes" hands off to `emh-rescue-media` — orientation never duplicates the build.
+8. **Register the chosen crons (approval-gated mutations), each followed by verification.** Register from the default-profile context (see Exact commands) so the jobs land in the default store with access to its channels.
+9. **Re-check the default cron inventory** and confirm each registered job's name, schedule, deliver target, toolsets, and prompt fingerprint. Report what was installed, what was declined (including rescue media consent), and the residual caveats (for example a `local`-only deliver when no channel was detected).
 
 ## Decision tree
 
@@ -82,7 +85,6 @@ Run only the smallest relevant subset. **Profile scoping is the critical detail:
 - `hermes --version`
 - `git -C "<recorded-source>" remote -v`
 - `git -C "<recorded-source>" ls-remote --heads origin` (update-check preflight; only when a remote exists)
-- `read_file(path="$HERMES_HOME/config.yaml", offset=1, limit=200)` (channel detection; redact any secrets)
 
 ### Approval-gated reproductions and mutations
 

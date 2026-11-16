@@ -260,6 +260,10 @@ def _is_official_url(url: str) -> bool:
             host == "hermes-agent.nousresearch.com"
             and (path == "/docs" or path.startswith("/docs/"))
         ) or (
+            # The project's own toolset hub (README cross-link), path-scoped.
+            host == "hermesagenttools.com"
+            and (path == "/hermes-agent" or path.startswith("/hermes-agent/"))
+        ) or (
             host == "github.com"
             and (path == "/NousResearch/hermes-agent" or path.startswith("/NousResearch/hermes-agent/"))
         ) or (
@@ -520,8 +524,14 @@ def test_scan_text_rejects_every_nonofficial_url_form_but_allows_official_famili
         "https://" + "github.com/AtlasOmnia/EMH-A-Hermes-Diagnostic-Profile.git",
         "https://" + "github.com/AtlasOmnia/EMH-A-Hermes-Diagnostic-Profile/releases/latest",
         "https://" + "api.github.com/repos/AtlasOmnia/EMH-A-Hermes-Diagnostic-Profile/releases",
+        "https://" + "api.github.com/repos/AtlasOmnia/EMH-A-Hermes-Diagnostic-Profile/tags",
+        "https://" + "hermesagenttools.com/hermes-agent/",
+        "https://" + "api.github.com/repos/AtlasOmnia/EMH-A-Hermes-Diagnostic-Profile/git/ref/tags/v0.2.14",
+        "https://" + "api.github.com/repos/AtlasOmnia/EMH-A-Hermes-Diagnostic-Profile/git/commits/" + "a" * 40,
         "https://" + "raw.githubusercontent.com/AtlasOmnia/EMH-A-Hermes-Diagnostic-Profile/main/distribution.yaml",
         "https://" + "raw.githubusercontent.com/AtlasOmnia/EMH-A-Hermes-Diagnostic-Profile/main/skills/emh-triage/SKILL.md",
+        "https://" + "raw.githubusercontent.com/AtlasOmnia/EMH-A-Hermes-Diagnostic-Profile/v0.2.14/distribution.yaml",
+        "https://" + "raw.githubusercontent.com/AtlasOmnia/EMH-A-Hermes-Diagnostic-Profile/v0.2.14/skills/emh-triage/SKILL.md",
         "https://" + "old.reddit.com/r/hermesagent/.json?limit=25",
         "https://" + "www.reddit.com/search.json?q=hermes&sort=relevance&limit=25",
         "https://" + "old.reddit.com/r/hermesagent/comments/abc123.json?limit=100",
