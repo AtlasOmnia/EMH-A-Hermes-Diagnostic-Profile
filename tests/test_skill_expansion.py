@@ -974,3 +974,40 @@ def test_bursty_workload_guidance_is_evidence_first_and_keeps_concurrency_claims
     assert "adding, removing, or clearing fallback entries is a mutation" in guidance
     assert "remains **hypothesis**" in guidance
     assert "max_concurrent_children" not in guidance
+
+
+def test_terminal_chat_guidance_separates_dashboard_and_desktop_launch_modes():
+    body = skill_body("emh-interface-diagnostics")
+    pitfalls = section(body, "Common pitfalls and recovery").lower()
+
+    assert "expecting plain `hermes` to open a graphical ui" in pitfalls
+    assert "not a provider or model failure" in pitfalls
+    assert "`hermes dashboard`" in pitfalls
+    assert "`hermes desktop`" in pitfalls
+    assert "treat each launch as approval-gated" in pitfalls
+    assert "`hermes dashboard --status`" in pitfalls
+    assert "not an assumed dependency cause" in pitfalls
+
+
+def test_subagent_cap_guidance_uses_runtime_config_not_instruction_files():
+    body = skill_body("emh-tool-runtime-diagnostics")
+    pitfalls = section(body, "Common pitfalls and recovery").lower()
+
+    assert "model-followed guidance, not a runtime limit" in pitfalls
+    assert "`hermes config get delegation.max_concurrent_children`" in pitfalls
+    assert "`hermes config get delegation.max_spawn_depth`" in pitfalls
+    assert "approval-gated configuration change" in pitfalls
+    assert "rejected with a limit error rather than merely discouraged" in pitfalls
+
+
+def test_host_migration_guidance_orders_backup_import_and_gates_overwrite():
+    body = skill_body("emh-update-recovery")
+    pitfalls = section(body, "Common pitfalls and recovery").lower()
+
+    assert "a backup archive is treated as a completed host migration" in pitfalls
+    assert pitfalls.index("`hermes backup` on the source") < pitfalls.index("`hermes import <zipfile>` on the target")
+    assert "encrypted and access-controlled" in pitfalls
+    assert "`hermes import` overwrites existing state" in pitfalls
+    assert "is approval-gated" in pitfalls
+    assert "`hermes backup --keep n` prunes older archives" in pitfalls
+    assert "before retiring the source" in pitfalls

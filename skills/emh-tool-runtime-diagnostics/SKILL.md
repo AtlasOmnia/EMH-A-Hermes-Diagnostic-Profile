@@ -136,6 +136,7 @@ Before mutation, record exact scope, verified backup, rollback, expected schema/
 - **Pitfall: retrying a denial through `execute_code`, shell, or another surface.** Recovery: stop, record denial verbatim after redaction, and request a new explicit approval only if the operator changes scope.
 - **Pitfall: truncation treated as failed execution.** Recovery: record return status and truncation marker separately; use an existing bounded spill/artifact if the tool provides one.
 - **Pitfall: enabling a tool and checking the same stale session.** Recovery: preserve the session, start an approved fresh one, and verify exposure without invoking the tool.
+- **Pitfall: an instruction-file rule is treated as an enforced subagent cap.** Recovery: a limit written in an instruction file or prompt is model-followed guidance, not a runtime limit. Read the effective values with `hermes config get delegation.max_concurrent_children` and `hermes config get delegation.max_spawn_depth`. Setting either value (for example `hermes config set delegation.max_concurrent_children 3`) is an approval-gated configuration change that applies to a new session or after a gateway restart. Verify in a fresh session that delegation beyond the cap is rejected with a limit error rather than merely discouraged.
 - **Pitfall: handler and backend errors conflated.** Recovery: identify whether dispatch reached the handler and whether the backend created a process/request before assigning root cause.
 
 ## Verification checklist
