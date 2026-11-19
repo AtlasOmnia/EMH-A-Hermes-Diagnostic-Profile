@@ -4,6 +4,10 @@ These are the public weekly release notes for EMH. The newest entries are public
 
 ## Unreleased
 
+### Fixed
+
+- Fixed issue #8 for Hermes v0.23.1: explicitly scope cron operations to the default profile, detect channels from the `Platforms:` line of default-profile status, use positional schedule/prompt arguments for cron creation, and disclose that per-job toolset restrictions are unavailable (the default-profile prompts must be self-contained and must not attach EMH skills).
+
 ### Convention
 
 - Keep unreleased changes here until the weekly release-note cut; retain the full historical record below.
