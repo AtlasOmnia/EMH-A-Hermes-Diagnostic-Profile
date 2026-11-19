@@ -254,7 +254,8 @@ def test_orientation_discloses_cost_and_data_before_each_cron_consent():
         assert lower.index(token) < nightly_consent, token
         assert lower.index(token) < weekly_consent, token
     assert 'read_file(path="$hermes_home/config.yaml"' not in lower
-    assert "hermes gateway status" in lower
+    assert "hermes --profile default status" in lower
+    assert "platforms:" in lower
 
 
 def test_changelog_has_issue_5_candidate_entry():
