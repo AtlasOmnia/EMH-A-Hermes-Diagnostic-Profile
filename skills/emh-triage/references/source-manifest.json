@@ -1,16 +1,16 @@
 {
-  "retrieved_at": "2026-11-16T16:01:40Z",
+  "retrieved_at": "2026-11-23T16:02:15Z",
   "installed": {
-    "version": "0.23.1",
+    "version": "0.23.3",
     "install_method": "git",
-    "source_commit": "3b421578588243f920886e6fe79a6faa87ea026e",
+    "source_commit": "caafe5389ae585ef77387a962aee05b1bcf17029",
     "dirty": false
   },
   "latest_official_release": {
-    "tag": "v0.23.1",
-    "version": "0.23.1",
-    "url": "https://github.com/NousResearch/hermes-agent/releases/tag/v0.23.1",
-    "published_at": "2026-11-10T01:42:15Z"
+    "tag": "v0.23.3",
+    "version": "0.23.3",
+    "url": "https://github.com/NousResearch/hermes-agent/releases/tag/v0.23.3",
+    "published_at": "2026-11-20T00:34:38Z"
   },
   "official_sources": [
     "https://hermes-agent.nousresearch.com/docs",

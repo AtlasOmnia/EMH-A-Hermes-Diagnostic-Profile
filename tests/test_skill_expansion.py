@@ -1011,3 +1011,16 @@ def test_host_migration_guidance_orders_backup_import_and_gates_overwrite():
     assert "is approval-gated" in pitfalls
     assert "`hermes backup --keep n` prunes older archives" in pitfalls
     assert "before retiring the source" in pitfalls
+
+
+def test_computer_use_contract_mismatch_guidance_is_status_first_and_gates_upgrade():
+    body = skill_body("emh-tool-runtime-diagnostics")
+    pitfalls = section(body, "Common pitfalls and recovery").lower()
+
+    assert "computer use contract-version mismatch" in pitfalls
+    assert pitfalls.index("`hermes computer-use status`") < pitfalls.index("`hermes computer-use doctor`")
+    assert "`hermes_cua_driver_cmd`" in pitfalls
+    assert "`hermes computer-use install --upgrade`" in pitfalls
+    assert "so it is approval-gated" in pitfalls
+    assert "remains **hypothesis**" in pitfalls
+    assert "do not move, stop, or replace a standalone driver" in pitfalls

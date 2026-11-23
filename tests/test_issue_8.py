@@ -62,7 +62,7 @@ def test_nightly_self_check_does_not_claim_per_job_read_only_toolsets():
     assert "toolsets `terminal, file`" not in content
 
 
-def test_issue_8_is_recorded_under_unreleased():
+def test_issue_8_is_recorded_in_release_notes():
     changelog = CHANGELOG.read_text(encoding="utf-8")
     unreleased = changelog.split("## Unreleased", 1)[1].split("## 0.2.15", 1)[0]
     lower = unreleased.lower()
