@@ -79,7 +79,7 @@ def test_manifest_has_required_metadata_and_owned_paths():
     manifest = yaml.safe_load((ROOT / "distribution.yaml").read_text(encoding="utf-8"))
 
     assert manifest["name"] == "emh"
-    assert manifest["version"] == "0.2.15"
+    assert manifest["version"] == "0.2.16"
     assert manifest["author"] == "Jonathan Rivera"
     assert manifest["license"] == "MIT"
     assert manifest["hermes_requires"] == ">=0.14.0"
@@ -118,18 +118,18 @@ def test_source_manifest_records_version_install_and_release_provenance():
     )
 
     assert source["retrieved_at"].endswith("Z")
-    assert source["installed"]["version"] == "0.23.1"
+    assert source["installed"]["version"] == "0.23.3"
     assert source["installed"]["install_method"] == "git"
     assert source["installed"]["source_commit"] == (
-        "3b421578588243f920886e6fe79a6faa87ea026e"
+        "caafe5389ae585ef77387a962aee05b1bcf17029"
     )
     assert source["installed"]["dirty"] is False
     assert "filenames" not in source["installed"]
     assert source["latest_official_release"] == {
-        "tag": "v0.23.1",
-        "version": "0.23.1",
-        "url": "https://github.com/NousResearch/hermes-agent/releases/tag/v0.23.1",
-        "published_at": "2026-11-10T01:42:15Z",
+        "tag": "v0.23.3",
+        "version": "0.23.3",
+        "url": "https://github.com/NousResearch/hermes-agent/releases/tag/v0.23.3",
+        "published_at": "2026-11-20T00:34:38Z",
     }
     assert "https://hermes-agent.nousresearch.com/docs" in source["official_sources"]
     assert "https://github.com/NousResearch/hermes-agent/releases/latest" in source[
@@ -142,7 +142,7 @@ def test_installed_distribution_loader_validates_manifest_and_version_requiremen
 
     assert manifest is not None
     assert manifest.name == "emh"
-    assert manifest.version == "0.2.15"
+    assert manifest.version == "0.2.16"
     assert manifest.hermes_requires == ">=0.14.0"
     assert manifest.distribution_owned == [
         "SOUL.md",
@@ -290,8 +290,8 @@ def test_public_version_and_weekly_changelog_contract():
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     manifest = yaml.safe_load((ROOT / "distribution.yaml").read_text(encoding="utf-8"))
     changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
-    assert manifest["version"] == "0.2.15"
-    assert "distribution version: `0.2.15`" in readme.lower()
+    assert manifest["version"] == "0.2.16"
+    assert "distribution version: `0.2.16`" in readme.lower()
     assert "newest entries are public release notes" in changelog.lower()
     assert "weekly" in changelog.lower()
     assert "unreleased" in changelog.lower()
@@ -323,7 +323,16 @@ def test_public_version_and_weekly_changelog_contract():
     ) in release_0215
     assert "advanced the distribution to `0.2.15`." in release_0215
     assert "Hermes Agent v0.23.1 latest-release baseline" in release_0215
-    pending = changelog.split("## Unreleased", 1)[1].split("## 0.2.15", 1)[0]
+    assert "## 0.2.16 — 2026-11-23" in unreleased
+    release_0216 = changelog.split("## 0.2.16", 1)[1].split("## 0.2.15", 1)[0]
+    assert (
+        "- Promoted one redacted community diagnostic — Computer Use driver "
+        "contract-version mismatch triage in `emh-tool-runtime-diagnostics`"
+    ) in release_0216
+    assert "advanced the distribution to `0.2.16`." in release_0216
+    assert "Hermes Agent v0.23.3 latest-release baseline" in release_0216
+    assert "issue #8" in release_0216.lower()
+    pending = changelog.split("## Unreleased", 1)[1].split("## 0.2.16", 1)[0]
     assert "### Added" not in pending and "### Changed" not in pending
 
 
@@ -365,7 +374,7 @@ def test_readme_documents_exact_inventory_and_mixed_version_policy():
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     lower = readme.lower()
 
-    assert "distribution version: `0.2.15`" in lower
+    assert "distribution version: `0.2.16`" in lower
     assert all(f"`{name}`" in readme for name in REQUIRED_SKILLS)
     assert "untouched v0.1 skills remain at `0.1.0`" in lower
     assert "sixteen v0.2 skills are `0.2.0`" in lower
